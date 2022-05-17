@@ -1,3 +1,4 @@
+// set GCP as provider
 provider "google" {
   credentials = file("attila-szombati-sandbox-922065a81037.json")
 
@@ -6,6 +7,7 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
+// use GCS to store terraform state
 resource "google_storage_bucket" "default" {
   name          = "attila-szombati-sandbox-bucket-tfstate"
   force_destroy = false
@@ -16,11 +18,13 @@ resource "google_storage_bucket" "default" {
   }
 }
 
+// create service account SVC
 resource "google_service_account" "SVC" {
   account_id   = "dataset"
   display_name = "Service Account for dataset"
 }
 
+// save ssh private key pem on local machine
 resource "local_sensitive_file" "ssh_private_key_pem" {
   content         = base64decode(google_service_account_key.mykey.private_key)
   filename        = "./sa_private_key.json"
@@ -31,6 +35,8 @@ resource "google_service_account_key" "mykey" {
   service_account_id = google_service_account.SVC.name
 }
 
+
+// WIP part
 data "google_iam_policy" "admin" {
 
   binding {
@@ -43,15 +49,18 @@ data "google_iam_policy" "admin" {
   }
 }
 
+// WIP part
 resource "google_project_iam_policy" "project" {
   project     = "attila-szombati-sandbox"
   policy_data = data.google_iam_policy.admin.policy_data
 }
 
+// Initialize BQ dataset
 resource "google_bigquery_dataset" "dataset" {
   dataset_id = "terraform_dataset"
 }
 
+// create VPC network
 resource "google_compute_network" "vpc_network" {
   name = "terraform-network"
 }
@@ -60,6 +69,8 @@ provider "tls" {
   // no config needed
 }
 
+
+// allow SSH to Compute engine instance
 resource "tls_private_key" "ssh" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -83,12 +94,11 @@ resource "google_compute_firewall" "allow_ssh" {
   }
 }
 
-data "google_client_openid_userinfo" "me" {}
-
 resource "google_compute_address" "static_ip" {
   name = "debian-vm"
 }
 
+// create Compute engine instance with the given parameters
 resource "google_compute_instance" "vm_instance" {
   name                      = "computer-123d"
   machine_type              = "n2-standard-2"
@@ -122,6 +132,7 @@ resource "random_id" "instance_id" {
   byte_length = 8
 }
 
+// create Cloud SQL instance with the given parameters
 resource "google_sql_database_instance" "main" {
   name             = "cloud-sql-postgres"
   database_version = "POSTGRES_13"
@@ -134,6 +145,7 @@ resource "google_sql_database_instance" "main" {
   }
 }
 
+// output as a sensitive data
 output "cloud-sql-postgres-password" {
   value     = google_sql_database_instance.main.root_password
   sensitive = true
@@ -143,6 +155,7 @@ output "cloud-sql-postgres-public-ip" {
   value = google_sql_database_instance.main.public_ip_address
 }
 
+// get input variable for VM instance type or use the staging.tfvars var file
 variable "tier" {
   type = string
 }
