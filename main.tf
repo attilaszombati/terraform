@@ -42,6 +42,7 @@ resource "google_project_iam_binding" "admin" {
   members = [
     "user:attila.szombati@aliz.ai",
     "serviceAccount:${google_service_account.SVC.email}",
+    "serviceAccount:terraform@attila-szombati-sandbox.iam.gserviceaccount.com"
   ]
 
 }
@@ -52,6 +53,16 @@ resource "google_project_iam_binding" "bigquery_admin" {
 
   members = [
     "serviceAccount:${google_service_account.SVC.email}",
+  ]
+
+}
+
+resource "google_project_iam_binding" "terraform_editor" {
+  project = "attila-szombati-sandbox"
+  role    = "roles/editor"
+
+  members = [
+    "serviceAccount:${google_service_account.SVC.email}"
   ]
 
 }
