@@ -35,24 +35,25 @@ resource "google_service_account_key" "mykey" {
   service_account_id = google_service_account.SVC.name
 }
 
+resource "google_project_iam_binding" "admin" {
+  project = "attila-szombati-sandbox"
+  role    = "roles/owner"
 
-// WIP part
-data "google_iam_policy" "admin" {
+  members = [
+    "user:attila.szombati@aliz.ai",
+    "serviceAccount:${google_service_account.SVC.email}",
+  ]
 
-  binding {
-    role = "roles/iam.serviceAccountUser"
-
-    members = [
-      "user:attila.szombati@aliz.ai",
-      "serviceAccount:${google_service_account.SVC.email}",
-    ]
-  }
 }
 
-// WIP part
-resource "google_project_iam_policy" "project" {
-  project     = "attila-szombati-sandbox"
-  policy_data = data.google_iam_policy.admin.policy_data
+resource "google_project_iam_binding" "bigquery_admin" {
+  project = "attila-szombati-sandbox"
+  role    = "roles/bigquery.admin"
+
+  members = [
+    "serviceAccount:${google_service_account.SVC.email}",
+  ]
+
 }
 
 // Initialize BQ dataset
