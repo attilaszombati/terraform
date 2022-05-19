@@ -4,6 +4,7 @@ resource "google_compute_address" "static_ip" {
 
 // create Compute engine instance with the given parameters
 resource "google_compute_instance" "vm_instance" {
+  zone                      = "us-central1-c"
   name                      = "computer-123d"
   machine_type              = "n2-standard-2"
   allow_stopping_for_update = true

@@ -6,7 +6,7 @@ resource "random_password" "password" {
 
 // create Cloud SQL instance with the given parameters
 resource "google_sql_database_instance" "main" {
-  name                = "cloud-db"
+  name                = "cloud-db-12345"
   database_version    = "POSTGRES_13"
   region              = "us-central1"
   root_password       = random_password.password.result

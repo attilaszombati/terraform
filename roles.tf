@@ -15,34 +15,12 @@ resource "google_service_account_key" "mykey" {
   service_account_id = google_service_account.SVC.name
 }
 
-resource "google_project_iam_binding" "admin" {
+resource "google_project_iam_binding" "bigquery_user" {
   project = "attila-szombati-sandbox"
-  role    = "roles/owner"
-
-  members = [
-    "user:attila.szombati@aliz.ai",
-    "serviceAccount:${google_service_account.SVC.email}",
-    "serviceAccount:terraform@attila-szombati-sandbox.iam.gserviceaccount.com"
-  ]
-
-}
-
-resource "google_project_iam_binding" "bigquery_admin" {
-  project = "attila-szombati-sandbox"
-  role    = "roles/bigquery.admin"
+  role    = "roles/bigquery.user"
 
   members = [
     "serviceAccount:${google_service_account.SVC.email}",
-  ]
-
-}
-
-resource "google_project_iam_binding" "terraform_editor" {
-  project = "attila-szombati-sandbox"
-  role    = "roles/editor"
-
-  members = [
-    "serviceAccount:${google_service_account.SVC.email}"
   ]
 
 }

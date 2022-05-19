@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
-    bucket      = "attila-szombati-sandbox-bucket-tfstate"
+    bucket      = "attila-szombati-sandbox-tfstate"
     prefix      = "terraform/state"
-    credentials = "attila-szombati-sandbox-922065a81037.json"
+    credentials = "/Users/szombatiattila/.config/gcloud/application_default_credentials.json"
   }
 }

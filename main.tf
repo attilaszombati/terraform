@@ -1,6 +1,6 @@
 // set GCP as provider
 provider "google" {
-  credentials = file("attila-szombati-sandbox-922065a81037.json")
+  credentials = file("/Users/szombatiattila/.config/gcloud/application_default_credentials.json")
 
   project = "attila-szombati-sandbox"
   region  = "us-central1"
@@ -8,7 +8,7 @@ provider "google" {
 
 // use GCS to store terraform state
 resource "google_storage_bucket" "default" {
-  name          = "attila-szombati-sandbox-bucket-tfstate"
+  name          = "attila-szombati-sandbox-tfstate"
   force_destroy = false
   location      = "US"
   storage_class = "STANDARD"
